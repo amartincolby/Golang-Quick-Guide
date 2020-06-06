@@ -1,21 +1,3 @@
-# Golang Quick Guide
-This document was inspired by Learn X in Y.
-
-The purpose of this document is primarily a tool for self-edification. By writing and teaching, I better learn. This is in contrast to my ReasonML Quick Guide where I both wanted to learn and also spread the ReasonML gospel. Go already has the gospel (The GOspel, perhaps?) being spread and heard. Still, as with most programming languages, much of the documentation available is poorly written with nary a drop of humanism in how it is delivered. I hope to deliver that humanism.
-
-# Let's Go
-Go is a good language. It is especially satisfying for those in the industry who despise the pandering, bloated direction that many languages have taken in the past two decades. Java, JavaScript, C#, and C++ have all become colossal, with specs so large that no one could possible learn them entirely. Go rejects almost all of the syntactic and semantic progress made in the past thirty years. It is lean, simple, and firmly rooted in the legacy of C, both semantically and syntactically. Go is also attractive because its simplicity and rigid style recommendations means that developers cannot be _clever_. Cleverness is the drug of the junior developer and the bain of the senior developer. The best code is the simplest, most easily-read code, and Go actively prevents anything but.
-
-That said, while it is enticing for those who look down upon tool-happy developers who unquestioningly accept the latest developments in a language, this semantic dogmatism also means that the problems of C in 1985 are essentially untouched. This makes Go easy to understand, but it also means that a Go program can fail. Go is strictly-typed but it is an unsafe language. This sort of unsafety can be annoying for those coming from more academic languages. The speed of Go cannot be impugned, though. It is easily the fastest garbage-collected language, and despite some truly admirable efforts from the Java world, this crown will likely remain upon Go's head.
-
-Go was designed to build n-tier systems. It is fast enough to be used for most anything, but that is its intended use. To further this, Go contains two semantic constructs meant to facilitate building n-tier applications: Goroutines and channels. Both are language level constructs intended to enable better asynchronicity across a system. Aside from them, though, Go is C, so it should be easily and immediately understandable to most in the programming world.
-
-# Further Information
-
-- [Official Go Documentation](https://golang.org/doc/)
-- [Golang University Playlists](https://www.youtube.com/channel/UCP67S6tmE0xv62yQLg9hnmg/playlists)
-
-``` golang
 /* Comment blocks start with slash-star,
    and end with star-slash. */
 // Line comments begin with a double slash.

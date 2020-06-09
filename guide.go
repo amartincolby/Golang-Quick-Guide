@@ -65,13 +65,21 @@ import (
 	"fmt" // A package in the Go standard library.
 	// Math library with local alias m.
 	// Yes, a web server!
+	// OS functions like working with the file system
 	// String conversions.
 )
 
 /*----------------------------------------------
- * Variables, pointers, and functions
+ * Basic types
  *----------------------------------------------
  */
+
+/* Go's list of types should be familiar to most programmers.
+
+/*----------------------------------------------
+ * Variables, pointers, and functions
+ *----------------------------------------------
+*/
 
 /* Variables in Go are conceptually similar to variables in C, to wit they are
 memory allocations. By default, variable declaration and use relies on
@@ -183,7 +191,7 @@ func main() {
 	fmt.Println("The Go application has finished.")
 }
 
-// Function parameters and returns can be explicitly typed.
+// Function parameters and returns must be explicitly typed.
 
 func whoYouGonnaCall(option int) string {
 	var hero string
@@ -195,10 +203,17 @@ func whoYouGonnaCall(option int) string {
 	} else if option == 3 {
 		hero = "Jem"
 	} else {
-		hero = "No hero selected"
+		hero = "Steve Urkel"
 	}
 
 	return hero
+}
+
+/* If a function's parameters are the same type, only the last one requires the
+type declaration. */
+
+func adder(x, y int) int {
+	return (x + y)
 }
 
 /* Function return names can be set in the declaration syntax. The function body
@@ -217,3 +232,242 @@ func loadMovie(option int) (movie string) {
 	}
 	return
 }
+
+/* Functions can return two values. Make note that the function is not returning
+a structure like a tuple. It is returning two distinct values that must be
+captured at the call site. */
+
+func getFilm(option int) (name string, time int) {
+	if option == 1 {
+		name = "Titanic"
+		time = 2030
+	} else if option == 2 {
+		name = "The Godfather"
+		time = 1900
+	} else if option == 3 {
+		name = "Black Panther"
+		time = 1830
+	} else {
+		name = "The Room"
+		time = 1645
+	}
+	return
+}
+
+var movieName, movieTime = getFilm(2)
+
+/*----------------------------------------------
+ * Basic types
+ *----------------------------------------------
+ */
+
+/*** Type Conversion ***/
+
+/* Go does not support implicit type conversion. Each type has an explicit
+conversion function to cast a value of one type as another. */
+
+var (
+	anInteger int = 1337
+	aFloat        = float64(anInteger)
+)
+
+/*** Boolean ***/
+
+var aBoolean bool = true
+
+/*** Integers ***/
+
+/* Go supports manifold integer types, both signed and unsigned. A signed
+integer is one where the last bit is used to determine whether the integer is
+negative or positive. An unsigned integer is one that uses all available bits to
+represent a positive number. As such, unsigned integers can represent double the
+number of positive integers as a signed integer. Integers can be broken up with
+underscores for formatting and readability purposes.
+
+All numbers shown are largest possible numbers for that type. */
+
+// Unsigned Integers
+
+var (
+	uInt1 uint8  = 255
+	uInt2 uint16 = 65535
+	uInt3 uint32 = 4294967295
+	uInt4 uint64 = 1844674407_3709551615
+)
+
+// Signed Integers
+
+var (
+	sInt1 int8  = 127
+	sInt2 int16 = 32767
+	sInt3 int32 = 2147483647
+	sInt4 int64 = 9223372036854775807
+)
+
+// Generic int Type
+
+/* Go also has generic int & uint types whose size is dependent on the platform
+for which the application is compiled. As with most languages where this
+distinction exists, it is generally best practice to use the generic types
+unless explicit knowledge of the integer size is required. When type inference
+is used, Go will assume a generic int. */
+
+var (
+	uInt uint = 1337
+	sInt int  = 8008
+)
+
+/*** Octal, Hexidecimal, and Binary ***/
+
+/* Any integer type can be used to represent an octal number, hexidecimal
+number, or raw binary number. Octal numbers need simply be prefixed with a zero.
+Hex numbers are prefixed with a zero followed by "x". Binary numbers are
+prefixed with zero and "b". */
+
+var (
+	octalNumber        = 01337
+	hexNumber    int32 = 0x1ee7
+	binaryNumber       = 0b01101110_01100101_01110010_01100100
+)
+
+/*** Floating Point ***/
+
+/* Go supports two types of floats: single and double precision, aka 32-bit and
+64-bit. The terms single and double are somewhat out-of-date and should instead
+be called binary32 and binary64. They are fully compatible with the IEE-754
+standard as found here:
+
+- https://en.wikipedia.org/wiki/Single-precision_floating-point_format
+- https://en.wikipedia.org/wiki/Double-precision_floating-point_format
+
+Like integers, floats can be broken up with underscores for formatting and
+readability purposes. When type inference is used, Go will assume a float64. */
+
+var (
+	float1 float32 = 3.1415927
+	float2 float64 = 3.14_1592653589793
+	float3         = 3.14
+)
+
+/*** Hexidecimal Floats ***/
+
+/* Floats support hexidecimal but requires a declared exponent with the exponent
+label "p". */
+
+var hexFloat = 0x3.0p2
+
+/*** Complex Numbers ***/
+
+/* Complex numbers are a combination of two real numbers a and b and the
+imaginary number i, where i is a number that satisfies x^2 = -1. A complex
+number as expressed is a + bi. Since a complex number is a combination of two
+floats, the type is double the combined floats, i.e. float32 = complex64 and
+float64 = complex128. When type inference is used, Go will assume complex128.
+
+Complex numbers are useful for computation but will rarely used for n-tier
+application development. */
+
+var (
+	complex1 complex64  = 13 + 37i
+	complex2 complex128 = 20 + 01i
+	complex3            = 19 + 99i
+)
+
+/* If using previously declared variables, the complex library is used. Note
+that the two values used must be of the same float type, in this case float64.*/
+
+var (
+	complex4 = complex(float2, float3)
+)
+
+/*** Byte & Rune ***/
+
+/* Go does not have a char type to represent single characters. Instead, it
+relies on aliases for uint8 and int32, byte and rune. Byte includes the entire
+ASCII character set while rune includes all unicode characters. Bytes and runes
+are wrapped in single-quotes. When type inhference is used, Go will assume a
+rune type. */
+
+var (
+	character1   byte = 'a'
+	character2   rune = 'b'
+	inferredRune      = 'c'
+)
+
+/*** String ***/
+
+/* Strings can be declared in two ways: double quotes and backticks. Quotes work
+as expected. They cannot span multiple lines and require escaping of certain
+characters. The particulars can be found in the Go documentation. */
+
+var aString = "Now for something completely different"
+
+/* Backticks denote raw strings of uninterpreted bytes. They do not require
+escape characters and can span multiple lines. The only behavior of note is that
+carriage return characters are discarded when the string is interpreted by the
+program. */
+
+var aRawString = `Stop that! This is
+getting awfully silly!`
+
+/*** Array ***/
+
+/* Arrays are fixed-size sequences of entities of the same type that exist contiguously in memory. */
+
+var integerArray [4]int
+
+func fillArray() {
+	integerArray[0] = 1
+	integerArray[1] = 3
+	integerArray[2] = 3
+	integerArray[3] = 7
+}
+
+/* Arrays can be simultaneously declared and populated with curly braces. */
+
+var stringArray = [4]string{"More", "human", "than", "human"}
+
+/* Arrays are one-dimensional, but n-dimensional arrays can be created with arrays of arrays. */
+
+var cubeArray [4][4][4]string
+
+/*** Slice ***/
+
+/* A slice is the first part of Go that will require some degree of elucidation
+for those coming from other lanaguages. It should be familiar to those coming
+from C++ but be new to most others. Be aware that while languages like
+JavaScript and Python have a slice for arrays, it behaves very differently.
+
+A slice is a contiguous section of an underlying array. A slice can be seen
+as a flexible and easy-to-use interface into an array. Slices provide behavior
+similar to arrays in more dynamic languages such as JavaScript and are thus more
+common than true arrays in production Go code. Multiple slices can be associated
+with a single array. A slice type is specified similarly to an array type, only
+without a length between the brackets.
+
+To slice an existing array, provide the starting index inclusive, and ending index exclusive. */
+
+var (
+	anArray [5]int = [5]int{1, 2, 3, 4, 5}
+	aSlice  []int  = anArray[1:3] // [2, 3]
+)
+
+/* In most cases, a slice literal will be used. Here, no underlying array is
+specified before the creation of the slice, and the Go runtime automatically
+creates an array under the slice. */
+
+var anotherSlice []int
+
+/* Since no length is specified in the slice type declaration, `anotherSlice` is
+of length 0 with no underlying array. The `make` command will create an array
+and return a slice for it.
+
+For `make`, the first argument specifies the creation of an integer slice, the
+second specifies the length of the slice, and the third specifies the length of
+the underlying array. */
+
+func makeSlice() {
+	anotherSlice = make([]int, 5, 10)
+}
+
+/* The only two built-in functions for slices are `copy` and `append`, but with them all of the common array procedures from other languages can be achieved. */

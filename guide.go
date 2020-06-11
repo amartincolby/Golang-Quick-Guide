@@ -66,24 +66,16 @@ import (
 	// Math library with local alias m.
 	// Yes, a web server!
 	// OS functions like working with the file system
-	// String conversions.
 )
-
-/*----------------------------------------------
- * Basic types
- *----------------------------------------------
- */
-
-/* Go's list of types should be familiar to most programmers.
 
 /*----------------------------------------------
  * Variables, pointers, and functions
  *----------------------------------------------
-*/
+ */
 
 /* Variables in Go are conceptually similar to variables in C, to wit they are
 memory allocations. By default, variable declaration and use relies on
-references by name, meaning that the run-time can put the value attached to that
+references by name, meaning that the runtime can put the value attached to that
 name anywhere in memory. Names must begin with a letter or underscore. Names
 using underscores are discouraged. Variables can be declared in two ways:
 explicit and short-form.
@@ -143,10 +135,10 @@ to a memory address. In Go, a pointer is a symbol that represents a specific
 physical location in memory.  Pointers provide significant performance benefits
 but are unsafe. Go does not have pointer arithmetic, meaning that the pointer's
 value itself cannot be altered with the usual mathematical operators like `+`
-or `-`. */
+or `-`.
 
-/* Create a pointer via the `*` prefix on the value type. The value contained at
-this memory address is `nil` by default. */
+Create a pointer via the `*` prefix on the type declaration. The value contained
+at this memory address is `nil` by default. */
 
 var pointerToTheAnswer *int
 
@@ -154,7 +146,7 @@ var pointerToTheAnswer *int
 The address operator is a unary operator that returns the memory address of
 a previously declared variable.
 
-Since the setting of a value at an address is assignment, it cannot happen
+Since the setting of a value at an address is an assignment, it cannot happen
 outside of a function. The below function exists purely to set the value of
 the pointer. */
 
@@ -412,7 +404,8 @@ getting awfully silly!`
 
 /*** Array ***/
 
-/* Arrays are fixed-size sequences of entities of the same type that exist contiguously in memory. */
+/* Arrays are fixed-size sequences of entities of the same type that exist
+contiguously in memory. */
 
 var integerArray [4]int
 
@@ -427,47 +420,80 @@ func fillArray() {
 
 var stringArray = [4]string{"More", "human", "than", "human"}
 
-/* Arrays are one-dimensional, but n-dimensional arrays can be created with arrays of arrays. */
+/* Arrays are one-dimensional, but n-dimensional arrays can be created with
+arrays of arrays. */
 
 var cubeArray [4][4][4]string
 
 /*** Slice ***/
 
 /* A slice is the first part of Go that will require some degree of elucidation
-for those coming from other lanaguages. It should be familiar to those coming
-from C++ but be new to most others. Be aware that while languages like
+for those coming from other lanaguages. Be aware that while languages like
 JavaScript and Python have a slice for arrays, it behaves very differently.
 
-A slice is a contiguous section of an underlying array. A slice can be seen
-as a flexible and easy-to-use interface into an array. Slices provide behavior
-similar to arrays in more dynamic languages such as JavaScript and are thus more
-common than true arrays in production Go code. Multiple slices can be associated
-with a single array. A slice type is specified similarly to an array type, only
-without a length between the brackets.
+A slice is a contiguous section of an underlying array. It does not itself
+contain any data. A slice can be seen as a flexible and easy-to-use interface
+into an array. Slices provide behavior similar to arrays in more dynamic
+languages such as JavaScript and are thus more common than true arrays in
+production Go code. Multiple slices can be associated with a single array. A
+slice type is specified similarly to an array type, only without a length
+between the brackets.
 
-To slice an existing array, provide the starting index inclusive, and ending index exclusive. */
+To slice an existing array, provide the starting index inclusive, and ending
+index exclusive. Slices can themselves be sliced, with each slice referencing
+the same array. */
 
 var (
-	anArray [5]int = [5]int{1, 2, 3, 4, 5}
-	aSlice  []int  = anArray[1:3] // [2, 3]
+	anArray       [7]int = [7]int{1, 2, 3, 4, 5, 6, 7}
+	aSlice        []int  = anArray[1:5] // [2, 3, 4, 5]
+	sliceOfASlice []int  = aSlice[1:4]  // [3, 4, 5]
 )
 
-/* In most cases, a slice literal will be used. Here, no underlying array is
-specified before the creation of the slice, and the Go runtime automatically
-creates an array under the slice. */
+/* In most cases, free slice literals will be used. Here, no underlying array is
+specified before the creation of the slice. Below, the Go automatically runtime
+creates an invisible, underlying array for `anotherSlice` to reference. By
+default, the slice and the array are of the same size. */
 
-var anotherSlice []int
+var anotherSlice []int = []int{1, 2, 3, 4, 5}
 
-/* Since no length is specified in the slice type declaration, `anotherSlice` is
-of length 0 with no underlying array. The `make` command will create an array
-and return a slice for it.
+/* Just as with arrays, multidimensional slices can be created with underlying
+arrays automatically created. */
 
-For `make`, the first argument specifies the creation of an integer slice, the
-second specifies the length of the slice, and the third specifies the length of
-the underlying array. */
+var threeDimensionalSlice [][][]string
 
-func makeSlice() {
-	anotherSlice = make([]int, 5, 10)
+/* Slices can also be created with the `make()` command. When used for creating
+slices, `make()` accepts three arguments. The first is a previously-declared
+slice or, as seen here, a new slice. The second is the length of the slice. The
+third is the capacity of the slice, which means the length of the underlying
+array. If no capacity is specified, the behavior of `make` is identical to the
+above syntax. */
+
+var yetAnotherSlice []int = make([]int, 5, 10)
+
+/* The only two built-in functions for slices are `copy` and `append`. `copy`
+copies elements from a source to a destination slice, allocating a new array if
+necessary. `append` adds an arbitrary items to the end of the slice. If the
+underlying array is too small to accommodate the items, a new array is created
+with more space, the old array is copied into it, and a new slice is returned
+that references that array. This behavior is extremely similar to arrays in
+languages like JavaScript. */
+
+/* For `copy`, the first argument is the source slice along with the items to copy.  the source and destination slices can be the same slice, different slices, or a new slice. */
+
+func copyToSlices() {
+
 }
 
-/* The only two built-in functions for slices are `copy` and `append`, but with them all of the common array procedures from other languages can be achieved. */
+/* Below, because yetAnotherSlice has nothing in it but has a specified capacity
+of 10, append does not create a new array, meaning that the operation is fast.
+Because anotherSlice was assigned an underlying array that was the length of the
+slice, append needs to create a new, larger array before returning the slice
+with 2 added, meaning that the operation is slower. */
+
+func appendToSlices() {
+	yetAnotherSlice = append(yetAnotherSlice, 4)
+	anotherSlice = append(anotherSlice, 2)
+}
+
+// but with
+// them all of the common array procedures from other languages can be achieved. */

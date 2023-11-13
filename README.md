@@ -1,5 +1,10 @@
 ![Golang Logo](Go_Logo_Blue.svg)
 
+## 2023 Update
+I have abandoned Go in favor of Rust for all of my work. I still love Go. I am moving to Rust because my true language love is OCaml and Rust is deeply inspired by it. Further, as one person who is interested in growing his skills in as wide an array of contexts as possible, Rust does that better than Go. For example, if I wanted to get into game development, I could do that in Rust. If I want to contribute to Linux, I can do that in Rust. If I want to write client-server applications, I can do that in Rust. If I want to write algorithms for supercomputers, I can do that in Rust. Go has more value on the market at the moment, but for someone who has been focused on front-end web development for most of his career, Rust's likely future as either a compliment to, or a complete replacement for, JavaScript makes it the language for me.
+
+If you would like to read my Quick Guide, [you can see it here](https://github.com/amartincolby/Rust-Quick-Guide).
+
 # Golang Quick Guide
 This document was inspired by Learn X in Y.
 
